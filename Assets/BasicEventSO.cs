@@ -1,18 +1,32 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using UnityEngine;
 
-public class BasicEventSO : MonoBehaviour
+[CreateAssetMenu(menuName = "Event")]
+public class BasicEventSO : ScriptableObject
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public List<GameEventListener> listeners = new List<GameEventListener>();
 
-    // Update is called once per frame
-    void Update()
+    public void raise(Component sender, object data)
     {
-        
+        for (int i = 0; i < listeners.Count; i++)
+        {
+            listeners[i].OnEventRaised(sender, data);
+        }
+    }
+    public void addListener(GameEventListener listener)
+    {
+        if (!listeners.Contains(listener))
+        {
+            listeners.Add(listener);
+        }
+    }
+    public void removeListener(GameEventListener listener)
+    {
+        if (listeners.Contains(listener))
+        {
+            listeners.Remove(listener);
+        }
     }
 }
